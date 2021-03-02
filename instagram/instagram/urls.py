@@ -15,7 +15,26 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.urls.conf import include
+from contents.views import HomeView
+from django.views.generic import TemplateView
+from django.conf.urls.static import static
+from django.shortcuts import redirect
+
+
+class NonUserTemplateView(TemplateView):
+    def dispatch(self, request, *args, **kwagrs):
+        # 로그인 되어있으면 로그인,로그아웃으로 못가게
+        if not request.user.is_anonymous:
+            return redirect('contents_home')
+        return super(NonUserTemplateView, self).dispatch(request, *args, **kwagrs)
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('apis/', include('apis.urls')),
+    path('', HomeView.as_view(), name='contents_home'),
+    path('login/', TemplateView.as_view(template_name='login.html'), name='login'),
+    path('register/', TemplateView.as_view(template_name='register.html'),
+         name='register'),
 ]
