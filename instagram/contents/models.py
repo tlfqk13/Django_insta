@@ -18,7 +18,7 @@ class Content(BaseModel):
     text = models.TextField(default='')
 
     class Meta:
-        ordering = ['-created_at']
+        ordering = ['-created_at'] # 최신순으로 피드 배치
         verbose_name_plural = "컨텐츠"
 
 
@@ -37,10 +37,21 @@ class Image(BaseModel):
 
     class Meta:
         unique_together = ['content', 'order']
-        ordering = ['order']
+        ordering = ['order'] # 오름차순 정렬 -order==내림차순
 
 
 class FollowRelation(BaseModel):
     follower = models.OneToOneField(User, on_delete=models.CASCADE)
     followee = models.ManyToManyField(User, related_name='followee')
 
+"""
+Follower        Followee
+A,B             C,D
+B,C             Z   
+
+----------------------------------
+ONE TO ONE 
+B               A,Z,C,D....
+C               B,D,F,G....
+
+"""
