@@ -16,11 +16,12 @@ class BaseView(View):
             'data':data,
             'message':message,
         }
-        return JsonResponse(result,status)
+        return JsonResponse(result,status=status)
 
 
 class UserCreateView(BaseView):
-    @method_decorator(csrf_exempt)
+    @method_decorator
+    @csrf_exempt
     def dispatch(self, request, *args, **kwargs):
         return super(UserCreateView,self).dispatch(request,*args,**kwargs)
     
@@ -43,7 +44,7 @@ class UserCreateView(BaseView):
         except IntegrityError:
             return self.response(message='이미 존재하는 아이디입니다.',status=400)
 
-        return self.response({{'user.id':user.id}})
+        return self.response({'user.id':user.id})
 
 
 class UserLoginView(BaseView):
